@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Happy Birthday 🎂</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 50% 40%,#1a0e2e,#08040e);overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.scene{perspective:1200px;z-index:1;position:relative}
+.card{width:300px;height:500px;position:relative;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.4,0,.2,1)}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:18px;-webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:0 20px 50px rgba(0,0,0,.9)}
+
+/* FRONT */
+.front{background:linear-gradient(155deg,#1a0f2e,#12091e,#1e0f1a);border:1px solid rgba(200,160,80,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 24px;cursor:pointer;overflow:hidden}
+.front::before{content:'';position:absolute;inset:12px;border:1px solid rgba(200,160,80,.1);border-radius:10px;pointer-events:none}
+.orn{position:absolute;color:rgba(200,160,80,.5);font-size:14px;pointer-events:none}
+.orn.tl{top:18px;left:18px}.orn.tr{top:18px;right:18px}.orn.bl{bottom:18px;left:18px}.orn.br{bottom:18px;right:18px}
+.sep{width:100%;display:flex;align-items:center;gap:8px}
+.sep-line{flex:1;height:1px}.sep-line.l{background:linear-gradient(90deg,transparent,rgba(200,160,80,.3))}.sep-line.r{background:linear-gradient(270deg,transparent,rgba(200,160,80,.3))}
+.sep-dot{color:rgba(200,160,80,.4);font-size:10px}
+.f-cake{font-size:60px;animation:pop .6s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 0 16px rgba(200,160,80,.5))}
+@keyframes pop{from{transform:scale(0) rotate(-8deg)}to{transform:scale(1)}}
+.f-sub{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(200,160,80,.6)}
+.f-title{font-family:'Dancing Script',cursive;font-size:44px;font-weight:700;line-height:1.1;text-align:center;background:linear-gradient(135deg,#f0d080,#e8b840,#f8e8b0,#e8b840);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shim 4s linear infinite}
+@keyframes shim{to{background-position:200% center}}
+.f-name{font-size:20px;font-weight:300;color:rgba(255,245,220,.9)}
+.f-msg{font-size:13px;font-weight:300;line-height:1.8;color:rgba(255,245,220,.45);text-align:center}
+.f-blow{background:none;border:1px solid rgba(200,160,80,.3);border-radius:30px;color:rgba(200,160,80,.75);font-size:13px;padding:9px 22px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.f-blow:hover{background:rgba(200,160,80,.08);color:rgba(200,160,80,1)}.f-blow:active{transform:scale(.94)}.f-blow.done{border-color:rgba(232,116,138,.5);color:rgba(232,116,138,.8)}
+.f-hint{font-size:11px;color:rgba(200,160,80,.25);display:flex;align-items:center;gap:5px}
+.f-hint span{animation:arr 1.6s ease infinite}
+@keyframes arr{0%,100%{transform:translateX(0);opacity:.25}50%{transform:translateX(5px);opacity:.8}}
+
+/* BACK */
+.back{transform:rotateY(180deg);background:#08100e;border:1px solid rgba(80,200,140,.18);display:flex;flex-direction:column;overflow:hidden}
+.bk-hd{flex-shrink:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.bk-title{font-size:13px;font-style:italic;color:rgba(160,220,190,.7)}
+.bk-flip{background:none;border:1px solid rgba(80,200,140,.25);border-radius:20px;color:rgba(80,200,140,.7);font-size:11px;padding:4px 12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.bk-flip:hover{background:rgba(80,200,140,.1);color:rgba(80,200,140,1)}.bk-flip:active{transform:scale(.93)}
+.photo-list{flex:1;display:flex;flex-direction:column;gap:7px;padding:10px 11px}
+.photo-item{flex:1;border-radius:12px;position:relative;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .18s,box-shadow .18s}
+.photo-item:hover{transform:scale(1.025);box-shadow:0 6px 18px rgba(0,0,0,.45)}.photo-item:active{transform:scale(.97)}
+.photo-item:nth-child(1){background:linear-gradient(135deg,#667eea,#764ba2)}
+.photo-item:nth-child(2){background:linear-gradient(135deg,#f093fb,#f5576c)}
+.photo-item:nth-child(3){background:linear-gradient(135deg,#4facfe,#00c6ff)}
+.photo-item:nth-child(4){background:linear-gradient(135deg,#43e97b,#38f9d7)}
+.photo-item:nth-child(5){background:linear-gradient(135deg,#fa709a,#fee140)}
+.photo-item::before{content:'';position:absolute;inset:0;background:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1px);background-size:14px 14px;pointer-events:none}
+.photo-item::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.52) 0%,rgba(0,0,0,.08) 55%,transparent 100%);pointer-events:none}
+.pi-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:32px;z-index:2;pointer-events:none}
+.pi-text{position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:2;pointer-events:none}
+.pi-text b{display:block;font-size:12px;font-weight:500;color:#fff;margin-bottom:3px}
+.pi-text small{font-size:10px;color:rgba(255,255,255,.48)}
+.pi-zoom{position:absolute;top:7px;right:7px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:9px;z-index:3;pointer-events:none}
+
+/* ZOOM */
+.zoom-overlay{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(2,8,6,.93);opacity:0;pointer-events:none;transition:opacity .22s;border-radius:18px}
+.zoom-overlay.open{opacity:1;pointer-events:all}
+.zoom-card{width:calc(100% - 22px);border-radius:16px;overflow:hidden;position:relative;transform:scale(.83);transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.zoom-overlay.open .zoom-card{transform:scale(1)}
+.zoom-body{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px 20px;position:relative;overflow:hidden}
+.zoom-body::before{content:'';position:absolute;inset:0;background:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:18px 18px}
+.zoom-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;display:none}
+.zoom-body.has-img::before{display:none}
+.zoom-body.has-img .zoom-icon{position:absolute;top:10px;left:12px;font-size:28px;z-index:4;text-shadow:0 2px 8px rgba(0,0,0,.8);animation:pop .3s cubic-bezier(.34,1.56,.64,1) both}
+.zoom-body.has-img .zoom-text{position:absolute;bottom:0;left:0;right:0;padding:28px 14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.75));font-size:13px;z-index:3}
+.zoom-icon{font-size:68px;position:relative;z-index:1;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both}
+.zoom-text{font-size:15px;font-style:italic;color:rgba(255,255,255,.75);text-align:center;line-height:1.65;position:relative;z-index:1}
+.zoom-footer{position:absolute;bottom:0;left:0;right:0;padding:9px 14px;background:rgba(0,0,0,.32);display:flex;justify-content:space-between;align-items:center}
+.zoom-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.32)}
+.zoom-nav{display:flex;gap:5px}
+.zoom-nav button{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.13);border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:sans-serif;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.zoom-nav button:hover{background:rgba(255,255,255,.24)}
+.zoom-close{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.zoom-close:hover{background:rgba(255,255,255,.15)}
+</style>
+</head>
+<body>
+<canvas id="C"></canvas>
+<div class="scene">
+  <div class="card" id="card">
+
+    <!-- ====== FRONT ====== -->
+    <div class="face front" id="front">
+      <span class="orn tl">✦</span><span class="orn tr">✦</span>
+      <span class="orn bl">✦</span><span class="orn br">✦</span>
+      <span class="f-cake" id="f-cake">🎂</span>
+      <span class="f-sub">Gửi đến người đặc biệt</span>
+      <div class="sep"><div class="sep-line l"></div><span class="sep-dot">✦</span><div class="sep-line r"></div></div>
+      <div class="f-title">Happy<br>Birthday</div>
+      <!-- ĐỔI TÊN Ở ĐÂY -->
+      <div class="f-name">Chị Giáo Thư</div>
+      <div class="sep"><div class="sep-line l"></div><span class="sep-dot">◆</span><div class="sep-line r"></div></div>
+      <!-- ĐỔI LỜI NHẮN Ở ĐÂY -->
+      <p class="f-msg">Chúc nàng một ngày thật đặc biệt,<br>tràn đầy niềm vui và yêu thương.</p>
+      <button class="f-blow" id="blow-btn" onclick="doBlow(event)">🕯️ Thổi nến sinh nhật</button>
+      <div class="f-hint">Nhấn để lật xem ảnh kỷ niệm <span>→</span></div>
+    </div>
+
+    <!-- ====== BACK ====== -->
+    <div class="face back">
+      <div class="bk-hd">
+        <span class="bk-title">✦ Ảnh kỷ niệm</span>
+        <button class="bk-flip" onclick="doFlip()">← Lật lại</button>
+      </div>
+      <!-- ĐỔI TÊN VÀ EMOJI TỪNG ẢNH Ở ĐÂY -->
+      <div class="photo-list">
+        <div class="photo-item" onclick="openZoom(0)">
+          <div class="pi-icon">📸</div>
+          <div class="pi-text"><b>Khoảnh khắc đáng nhớ</b><small>Nhấn để xem lớn</small></div>
+          <div class="pi-zoom">🔍</div>
+        </div>
+        <div class="photo-item" onclick="openZoom(1)">
+          <div class="pi-icon">🎊</div>
+          <div class="pi-text"><b>Khoảnh khắc ngày thường</b><small>Nhấn để xem lớn</small></div>
+          <div class="pi-zoom">🔍</div>
+        </div>
+        <div class="photo-item" onclick="openZoom(2)">
+          <div class="pi-icon">🌸</div>
+          <div class="pi-text"><b>Soooo cute</b><small>Nhấn để xem lớn</small></div>
+          <div class="pi-zoom">🔍</div>
+        </div>
+        <div class="photo-item" onclick="openZoom(3)">
+          <div class="pi-icon">🎵</div>
+          <div class="pi-text"><b>Bạn bè thân yêu</b><small>Nhấn để xem lớn</small></div>
+          <div class="pi-zoom">🔍</div>
+        </div>
+        <div class="photo-item" onclick="openZoom(4)">
+          <div class="pi-icon">💫</div>
+          <div class="pi-text"><b>Những ngày đẹp nhất</b><small>Nhấn để xem lớn</small></div>
+          <div class="pi-zoom">🔍</div>
+        </div>
+      </div>
+
+      <!-- zoom overlay -->
+      <div class="zoom-overlay" id="zoom">
+        <div class="zoom-card" id="zoom-card">
+          <div class="zoom-body" id="zoom-body">
+            <img id="zoom-image" class="zoom-img" src="" alt="">
+            <div class="zoom-icon" id="zoom-icon">📸</div>
+            <div class="zoom-text" id="zoom-text"></div>
+          </div>
+          <div class="zoom-footer">
+            <span class="zoom-label" id="zoom-label"></span>
+            <div class="zoom-nav">
+              <button onclick="zmNav(-1)">‹</button>
+              <button onclick="zmNav(1)">›</button>
+            </div>
+          </div>
+          <button class="zoom-close" onclick="closeZoom()">✕</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const CV=document.getElementById('C'),ctx=CV.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=CV.width=window.innerWidth;H=CV.height=window.innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+const COLS=['#f0d080','#e8a8c8','#b090f0','#f0c060','#f8e8b0'];
+class Pt{
+  constructor(b){
+    this.b=b||false;
+    if(b){this.x=W/2;this.y=H*.38;this.vx=(Math.random()-.5)*18;this.vy=(Math.random()-.88)*16;this.sz=Math.random()*10+4;this.life=1;this.d=Math.random()*.02+.012;}
+    else{this.x=Math.random()*W;this.y=H+Math.random()*H;this.vx=(Math.random()-.5)*.3;this.vy=-(Math.random()*.5+.3);this.sz=Math.random()*2+.5;this.life=.4;}
+    this.col=COLS[Math.floor(Math.random()*COLS.length)];this.r=Math.random()*Math.PI*2;this.rs=(Math.random()-.5)*.1;this.sq=Math.random()>.5;
+  }
+  tick(){this.x+=this.vx;this.y+=this.vy;this.r+=this.rs;if(this.b){this.vy+=.32;this.life-=this.d;}else if(this.y<-8){this.y=H+8;this.x=Math.random()*W;}}
+  draw(){ctx.save();ctx.globalAlpha=Math.max(0,this.b?this.life:this.life*.3);ctx.fillStyle=this.col;ctx.translate(this.x,this.y);ctx.rotate(this.r);if(this.sq)ctx.fillRect(-this.sz/2,-this.sz/4,this.sz,this.sz/2);else{ctx.beginPath();ctx.arc(0,0,this.sz/2,0,Math.PI*2);ctx.fill();}ctx.restore();}
+}
+for(let i=0;i<35;i++)pts.push(new Pt());
+(function loop(){ctx.clearRect(0,0,W,H);pts=pts.filter(p=>!p.b||p.life>0);pts.forEach(p=>{p.tick();p.draw();});requestAnimationFrame(loop);})();
+
+let flipped=false;
+document.getElementById('front').addEventListener('click',e=>{if(!e.target.closest('#blow-btn'))doFlip();});
+function doFlip(){flipped=!flipped;document.getElementById('card').classList.toggle('flipped',flipped);}
+
+let blown=false;
+function doBlow(e){
+  e.stopPropagation();if(blown)return;blown=true;
+  const b=document.getElementById('blow-btn');
+  b.textContent='🎊 Chúc mừng!';b.classList.add('done');
+  document.getElementById('f-cake').textContent='🎆';
+  for(let i=0;i<160;i++)setTimeout(()=>pts.push(new Pt(true)),i*10);
+  setTimeout(doFlip,1800);
+}
+
+// ĐỔI NỘI DUNG ZOOM Ở ĐÂY
+const DATA=[
+  {icon:'📸',txt:'Khoảnh khắc đáng nhớ ngày tốt nghiệp',lbl:'Khoảnh khắc',g:'linear-gradient(135deg,#667eea,#764ba2)',
+    image: './publish/minhthu-totnghiep.png'
+  },
+  {icon:'🎊',txt:'Cô giáo Thư luôn yêu nghề',lbl:'Khoảnh khắc ngày thường',g:'linear-gradient(135deg,#f093fb,#f5576c)',
+    image: './publish/minhthu-diday.jpg'
+  },
+  {icon:'🌸',txt:'Một chút dễ thương',lbl:'Kỷ niệm',g:'linear-gradient(135deg,#4facfe,#00c6ff)',
+    image: './publish/cute-minhthu.png'
+  },
+  {icon:'🎵',txt:'Những người bạn thân yêu nhất của bạn',lbl:'Bạn bè',g:'linear-gradient(135deg,#43e97b,#38f9d7)',
+    image: './publish/minhthu-friends.png'
+  },
+  {icon:'💫',txt:'Tháng ngày đẹp đẽ ta đã có bên nhau',lbl:'Ngày đẹp',g:'linear-gradient(135deg,#fa709a,#fee140)',
+    image: './publish/480653632_1677027053222904_990865393084075215_n.jpg'
+  },
+];
+let zmIdx=0;
+const zEl=document.getElementById('zoom'),zCard=document.getElementById('zoom-card');
+const zBody=document.getElementById('zoom-body');
+function renderZoom(){
+  const d=DATA[zmIdx];zCard.style.background=d.g;
+  const ic=document.getElementById('zoom-icon');
+  ic.style.animation='none';ic.textContent=d.icon;void ic.offsetWidth;
+  ic.style.animation='pop .3s cubic-bezier(.34,1.56,.64,1) both';
+  document.getElementById('zoom-text').textContent=d.txt;
+  document.getElementById('zoom-label').textContent=`${zmIdx+1}/${DATA.length} — ${d.lbl}`;
+  const img=document.getElementById('zoom-image');
+  if(d.image){
+    img.src=d.image;img.style.display='block';
+    zBody.classList.add('has-img');
+  }else{
+    img.src='';img.style.display='none';
+    zBody.classList.remove('has-img');
+  }
+}
+function openZoom(i){zmIdx=i;renderZoom();zEl.classList.add('open');}
+function closeZoom(){zEl.classList.remove('open');}
+function zmNav(d){zmIdx=(zmIdx+d+DATA.length)%DATA.length;renderZoom();}
+
+zEl.addEventListener('click',e=>{if(e.target===zEl)closeZoom();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeZoom();
+  if(e.key==='ArrowLeft')zmNav(-1);
+  if(e.key==='ArrowRight')zmNav(1);
+});
+</script>
+</body>
+</html>
